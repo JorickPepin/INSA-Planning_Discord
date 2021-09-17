@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 from constant import (
-    INSA_URL, ZIMBRA_URL, PLANNING_URL,
-    LOGIN, EMAIL, PASSWORD
+    INSA_URL, PLANNING_URL,
+    LOGIN, PASSWORD
 )
 
 session = requests.Session()
@@ -48,21 +48,6 @@ def load_planning() -> str:
     return response.text
 
 
-# def import_planning_on_zimbra():
-#     """Imports an .ics file on the user's zimbra mailbox"""
-
-#     calendar = open('calendar.ics', mode='r').read()
-
-#     session.post(
-#         ZIMBRA_URL,
-#         auth=(EMAIL, PASSWORD),
-#         data=calendar.encode('utf-8'),
-#         headers={'Content-Type': 'text/calendar; charset=UTF-8'}
-#     )
-
-
 if __name__ == '__main__':
     insa_login()
     planning = load_planning()
-
-    # import_planning_on_zimbra()
