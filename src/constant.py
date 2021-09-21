@@ -18,6 +18,8 @@ INSA_URL = "https://login.insa-lyon.fr/cas/login"
 
 
 #- utils
+LAUNCH_TIME = "17:30"
+
 # The structure of the timetable website makes it difficult to recover the duration of a class slot.
 # The following dictionnary contains the main slots in the form {number of colspan => lesson duration in minutes}.
 # If the slot is not available here, an algorithm is implemented to determine its duration but it does not have

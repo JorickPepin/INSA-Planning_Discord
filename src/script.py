@@ -1,24 +1,30 @@
 import re
+from time import sleep
 from datetime import datetime, timedelta, time, date
 from typing import List
-import requests
+from requests import Session
+import schedule
 from bs4 import BeautifulSoup, element
 from pytz import timezone
 from lesson import Lesson
 from constant import (
     INSA_URL, PLANNING_URL,
-    LOGIN, PASSWORD, COLSPAN_DURATION
+    LOGIN, PASSWORD, COLSPAN_DURATION, LAUNCH_TIME
 )
 
-def insa_login() -> None:
+
+def insa_login() -> Session:
     """
-    Connects to the INSA server with the user's identifiers.
+    Connect to the INSA server with the user's identifiers and return the the created session.
 
     The server uses the Central Authentication Service (CAS) system,
     it is necessary to send a first GET request to retrieve the
     login ticket and the execution code before sending a POST one
     with the required information.
     """
+
+    session = Session()
+    session.headers.update({'User-Agent': 'Mozilla/5.0'})
 
     response = session.get(INSA_URL)
     content = BeautifulSoup(response.text, 'lxml')
@@ -39,6 +45,8 @@ def insa_login() -> None:
         data=form
     )
 
+    return session
+
 
 def determine_desired_date() -> str:
     """
@@ -56,7 +64,7 @@ def determine_desired_date() -> str:
     return tomorrow_date.strftime("%d/%m/%Y")
 
 
-def load_lessons(desired_date : str) -> List[Lesson]:
+def load_lessons(session : Session, desired_date : str) -> List[Lesson]:
     """
     Load the lessons from the desired date of the form dd/mm/yyyy
     thanks to the planning url and the desired year.
@@ -223,20 +231,22 @@ def load_lessons(desired_date : str) -> List[Lesson]:
     return lessons
 
 
+@schedule.repeat(schedule.every().day.at(LAUNCH_TIME))
 def main():
     """Program launch"""
-
-    insa_login()
+    session = insa_login()
 
     desired_date = determine_desired_date()
-    lessons = load_lessons(desired_date)
+    lessons = load_lessons(session, desired_date)
     for lesson in lessons:
         print(lesson)
         print('--------')
+    print('--------')
+
+    session.close()
 
 
 if __name__ == '__main__':
-    session = requests.Session()
-    session.headers.update({'User-Agent': 'Mozilla/5.0'})
-
-    main()
+    while True:
+        schedule.run_pending()
+        sleep(60)
