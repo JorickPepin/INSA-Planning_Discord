@@ -1,15 +1,13 @@
 import re
-from time import sleep
 from datetime import datetime, timedelta, time, date
 from typing import List
 from requests import Session
-import schedule
 from bs4 import BeautifulSoup, element
-from pytz import timezone
 from lesson import Lesson
 from constant import (
     INSA_URL, PLANNING_URL,
-    LOGIN, PASSWORD, COLSPAN_DURATION, LAUNCH_TIME
+    LOGIN, PASSWORD, COLSPAN_DURATION,
+    GROUPS_BY_YEAR, YEAR_OF_STUDY
 )
 
 
@@ -48,23 +46,7 @@ def insa_login() -> Session:
     return session
 
 
-def determine_desired_date() -> str:
-    """
-    The date on which we want to retrieve the lessons is the day
-    after the date on which the script is launched.
-
-    Output format: dd/mm/yyyy (ex: 16/09/2021)
-    """
-
-    time_zone = timezone('Europe/Paris')
-
-    current_date = time_zone.localize(datetime.now())
-    tomorrow_date = current_date + timedelta(days=1)
-
-    return tomorrow_date.strftime("%d/%m/%Y")
-
-
-def load_lessons(session : Session, desired_date : str) -> List[Lesson]:
+def load_lessons(session : Session, desired_date : datetime) -> List[Lesson]:
     """
     Load the lessons from the desired date of the form dd/mm/yyyy
     thanks to the planning url and the desired year.
@@ -92,7 +74,7 @@ def load_lessons(session : Session, desired_date : str) -> List[Lesson]:
                 def clean_title(title : str) -> str:
                     """Clean the lesson title to keep only the necessary information"""
 
-                    return re.search(r'(.*?)( \(| \[)', title).group(1)
+                    return re.search(r'(.*?)( \((LV1|LV2|EPS)| \[)', title).group(1)
 
                 def determine_type(title : str) -> str:
                     """Determine the type of the lesson from its title"""
@@ -102,13 +84,13 @@ def load_lessons(session : Session, desired_date : str) -> List[Lesson]:
                         'LV1': 'language',
                         'LV2': 'language',
                         'EPS': 'sport',
-                        'CM': 'lecture',
+                        'PR': 'project',
+                        'CM': 'CM',
                         'TD': 'TD',
                         'TP': 'TP'
                     }
 
                     res = None
-
                     for template, lesson_type in types.items():
                         if template in title:
                             res = lesson_type
@@ -189,7 +171,7 @@ def load_lessons(session : Session, desired_date : str) -> List[Lesson]:
             global_lessons = lessons_to_parse[0].find_all('td', {'class': ['Slot-CM', 'Slot-EDT', 'Slot-PR']})
 
             for global_lesson in global_lessons:
-                lessons.append(parse_lesson(global_lesson, ['1', '2', '3', '4']))
+                lessons.append(parse_lesson(global_lesson, GROUPS_BY_YEAR[YEAR_OF_STUDY]))
 
             # - specific lessons
             for group, tr_tag in enumerate(lessons_to_parse, 1):
@@ -217,10 +199,13 @@ def load_lessons(session : Session, desired_date : str) -> List[Lesson]:
 
             raw_lessons[lessons_day].append(tr_tag)
 
-        lessons_to_parse = raw_lessons.get(desired_date) # contains the 4 <tr> in which the lessons of each group are located
+
+        desired_date_formatted = desired_date.strftime("%d/%m/%Y")
+
+        lessons_to_parse = raw_lessons.get(desired_date_formatted) # contains the 4 <tr> in which the lessons of each group are located
 
         if not lessons_to_parse: # the date is not in the planning
-            raise KeyError(f"There are no lessons on {desired_date}")
+            return None
 
         return parse_lessons(lessons_to_parse)
 
@@ -231,22 +216,11 @@ def load_lessons(session : Session, desired_date : str) -> List[Lesson]:
     return lessons
 
 
-@schedule.repeat(schedule.every().day.at(LAUNCH_TIME))
-def main():
-    """Program launch"""
+def get_lessons(desired_date):
+    """Launch the recovery of the lessons and return them"""
+
     session = insa_login()
-
-    desired_date = determine_desired_date()
     lessons = load_lessons(session, desired_date)
-    for lesson in lessons:
-        print(lesson)
-        print('--------')
-    print('--------')
-
     session.close()
-
-
-if __name__ == '__main__':
-    while True:
-        schedule.run_pending()
-        sleep(60)
+    
+    return lessons
