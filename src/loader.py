@@ -222,5 +222,5 @@ def get_lessons(desired_date):
     session = insa_login()
     lessons = load_lessons(session, desired_date)
     session.close()
-    
+
     return lessons

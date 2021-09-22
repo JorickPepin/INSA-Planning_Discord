@@ -1,8 +1,8 @@
 import random
+from datetime import datetime, timedelta
+from typing import List
 from discord import Client, Embed
 from discord.ext import tasks
-from datetime import date, datetime, timedelta
-from typing import List
 import loader
 from lesson import Lesson
 from constant import (
@@ -37,7 +37,7 @@ def generate_embed(lessons : List[Lesson], desired_date : datetime) -> str:
     def create_rest_embed(title : str) -> Embed:
         """Create the embed for a day without lesson (rest day)"""
 
-        embed = Embed(title=title, colour=EMBED_COLOR) 
+        embed = Embed(title=title, colour=EMBED_COLOR)
         embed.set_image(url=random.choice(REST_IMAGES))
 
         return embed
@@ -52,7 +52,7 @@ def generate_embed(lessons : List[Lesson], desired_date : datetime) -> str:
             name += " " + EMOJI_GROUPS.get(group)
 
         embed.add_field(name=name, value=BLANK_LINE, inline=False)
-        
+
         for index, lesson in enumerate(lessons, 1):
             name, value = lesson.to_string_embed()
 
@@ -66,7 +66,7 @@ def generate_embed(lessons : List[Lesson], desired_date : datetime) -> str:
     def create_embed(lessons : List[Lesson], title : str) -> Embed:
         """Create the embed for a normal day with lessons"""
 
-        embed = Embed(title=title, colour=EMBED_COLOR, description=BLANK_LINE) 
+        embed = Embed(title=title, colour=EMBED_COLOR, description=BLANK_LINE)
 
         for group in GROUPS_BY_YEAR[YEAR_OF_STUDY]:
 
@@ -87,7 +87,7 @@ def generate_embed(lessons : List[Lesson], desired_date : datetime) -> str:
                     value += "\n" + BLANK_LINE + "\n" + BLANK_LINE
 
                 embed.add_field(name=name, value=value, inline=False)
-        
+
         return embed
 
     title = bold("Emploi du temps du " + desired_date.strftime("%A %d %B") + " :") + "\n"
@@ -108,7 +108,7 @@ def generate_embed(lessons : List[Lesson], desired_date : datetime) -> str:
 
 @client.event
 async def on_ready():
-    loop.start() 
+    loop.start()
 
 @tasks.loop(minutes=1)
 async def loop():
@@ -122,6 +122,6 @@ async def loop():
 
         await client.get_channel(DISCORD_CHANNEL_ID).send(embed=embed)
 
-    
+
 client.run(DISCORD_TOKEN)
  

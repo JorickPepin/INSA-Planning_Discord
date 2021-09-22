@@ -7,7 +7,7 @@ from constant import (
 
 class Lesson:
     """Represent a lesson in the planning"""
-   
+
     def __init__(self, start_time : str, end_time : str, teacher : str, place : str, title : str, type : str, groups : List[str], link : str):
         self.start_time = start_time
         self.end_time = end_time
@@ -22,7 +22,7 @@ class Lesson:
         """Indicates whether the lesson is common to all groups"""
 
         return len(self.groups) == len(GROUPS_BY_YEAR[YEAR_OF_STUDY])
-    
+
     def get_emoji_time(self) -> str:
         """Return the emoji to use for the time according to the start time of the lesson"""
 
@@ -42,7 +42,7 @@ class Lesson:
         """Prepare and return the name and the value that will be displayed in the embed"""
 
         name = self.get_emoji_time() + f" {self.start_time} - {self.end_time}"
-    
+
         value = EMOJI_TITLES.get(self.type) + " " if self.type in EMOJI_TITLES else ""
 
         value += self.title
