@@ -11,6 +11,7 @@ YEAR=3  # desired year of the schedule (3, 4 or 5)
 
 DISCORD_TOKEN=XXX  # the token of the bot
 DISCORD_CHANNEL_ID=XXX  # the channel id in which the bot must write
+LAUNCH_TIME=18h00  # the time at which the schedule is to be imported
 ```
 
 Install the dependencies:

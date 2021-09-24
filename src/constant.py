@@ -12,6 +12,7 @@ PASSWORD = os.getenv('PASSWORD')
 YEAR_OF_STUDY = int(os.getenv('YEAR'))
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
+LAUNCH_TIME = os.getenv('LAUNCH_TIME')
 
 #- LINKS
 PLANNING_URL = f"https://servif-cocktail.insa-lyon.fr/EdT/{YEAR_OF_STUDY}IF.php"
@@ -47,7 +48,6 @@ REST_IMAGES = [
 ]
 
 #- UTILS
-LAUNCH_TIME = "18h00"
 EMBED_COLOR = 0xff0000
 BLANK_LINE = '\u200b'
 GROUPS_BY_YEAR = {
