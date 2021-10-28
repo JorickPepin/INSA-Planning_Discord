@@ -1,6 +1,11 @@
+"""
+Contain environment variables and constants.
+"""
+
 import os
 import locale
 from dotenv import load_dotenv
+from models.lesson import LessonType
 
 load_dotenv()
 
@@ -15,7 +20,7 @@ DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
 LAUNCH_TIME = os.getenv('LAUNCH_TIME')
 
 #- LINKS
-PLANNING_URL = f"https://servif-cocktail.insa-lyon.fr/EdT/{YEAR_OF_STUDY}IF.php"
+TIMETABLE_URL = f"https://servif-cocktail.insa-lyon.fr/EdT/{YEAR_OF_STUDY}IF.php"
 INSA_URL = "https://login.insa-lyon.fr/cas/login"
 
 #- EMOJI / IMAGES
@@ -31,13 +36,13 @@ EMOJI_GROUPS = {
     '4': ":four:"
 }
 EMOJI_TITLES = {
-    'CM': ":orange_book:",
-    'TD': ":blue_book:",
-    'TP': ":closed_book:",
-    'special': ":mega:",
-    'sport': ":person_running:",
-    'language': ":speaking_head:",
-    'project': ":technologist:"
+    LessonType.CM: ":orange_book:",
+    LessonType.TD: ":blue_book:",
+    LessonType.TP: ":closed_book:",
+    LessonType.SPECIAL: ":mega:",
+    LessonType.SPORT: ":person_running:",
+    LessonType.LANGUAGE: ":speaking_head:",
+    LessonType.PROJECT: ":technologist:"
 }
 REST_IMAGES = [
     "https://i.kym-cdn.com/entries/icons/original/000/034/981/cover5.jpg",
@@ -56,10 +61,11 @@ GROUPS_BY_YEAR = {
     5: ['1', '2', '3']
 }
 
-# The structure of the timetable website makes it difficult to recover the duration of a class slot.
-# The following dictionnary contains the main slots in the form {number of colspan => lesson duration in minutes}.
-# If the slot is not available here, an algorithm is implemented to determine its duration but it does not have
-# 100% accuracy (possible shift of 15 minutes).
+# The structure of the timetable website makes it difficult to recover
+# the duration of a class slot. The following dictionnary contains the
+# main slots in the form {number of colspan => lesson duration in minutes}.
+# If the slot is not available here, an algorithm is implemented to determine
+# its duration but it does not have 100% accuracy (possible shift of 15 minutes).
 # This solution is not optimal so do not hesitate to contribute if you find a better one.
 COLSPAN_DURATION = {
     4: 60,
