@@ -114,11 +114,8 @@ async def on_ready():
 @tasks.loop(minutes=1)
 async def loop():
 
-    if True:#get_current_time() == LAUNCH_TIME:
+    if get_current_time() == LAUNCH_TIME:
         tomorrow_date = get_tomorrow_date()
-
-        tomorrow_date = datetime(2021, 11, 2)
-
         timetable = loader.get_timetable(tomorrow_date)
         embed = generate_embed(timetable)
 

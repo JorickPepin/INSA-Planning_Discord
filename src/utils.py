@@ -5,7 +5,6 @@ Contain environment variables and constants.
 import os
 import locale
 from dotenv import load_dotenv
-from models.lesson import LessonType
 
 load_dotenv()
 
@@ -35,21 +34,14 @@ EMOJI_GROUPS = {
     '3': ":three:",
     '4': ":four:"
 }
-EMOJI_TITLES = {
-    LessonType.CM: ":orange_book:",
-    LessonType.TD: ":blue_book:",
-    LessonType.TP: ":closed_book:",
-    LessonType.SPECIAL: ":mega:",
-    LessonType.SPORT: ":person_running:",
-    LessonType.LANGUAGE: ":speaking_head:",
-    LessonType.PROJECT: ":technologist:"
-}
 REST_IMAGES = [
     "https://i.kym-cdn.com/entries/icons/original/000/034/981/cover5.jpg",
     "https://pbs.twimg.com/media/DlPW9AAW4AAs2O9.jpg:large",
     "https://i.pinimg.com/736x/9b/dc/a0/9bdca0ce9495c9e2fe0d011dd3b6d157.jpg",
     "https://newfastuff.com/wp-content/uploads/2019/06/ZYD2wDy.png",
-    "https://i.imgflip.com/4nfm9a.jpg"
+    "https://i.imgflip.com/4nfm9a.jpg",
+    "https://i.imgflip.com/4svgqu.png",
+    "https://indianmemetemplates.com/wp-content/uploads/Sick-Spider-man.jpg"
 ]
 
 #- UTILS

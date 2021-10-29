@@ -3,13 +3,12 @@ from datetime import datetime, timedelta, time, date
 from typing import List, Optional
 from requests import Session
 from bs4 import BeautifulSoup, element
-from models.lesson import Lesson
+from models.lesson import Lesson, LessonType
 from models.timetable import Timetable
 from utils import (
     INSA_URL, TIMETABLE_URL,
     LOGIN, PASSWORD, COLSPAN_DURATION,
-    GROUPS_BY_YEAR, YEAR_OF_STUDY,
-    LessonType
+    GROUPS_BY_YEAR, YEAR_OF_STUDY
 )
 
 
@@ -74,14 +73,14 @@ def load_lessons(session: Session, desired_date: datetime) -> List[Lesson]:
                 def determine_type(title: str) -> Optional[LessonType]:
                     """Determine the type of the lesson from its title"""
                     types = {
-                        'EDT': LessonType.SPECIAL,
                         'LV1': LessonType.LANGUAGE,
                         'LV2': LessonType.LANGUAGE,
                         'EPS': LessonType.SPORT,
                         'PR': LessonType.PROJECT,
                         'CM': LessonType.CM,
                         'TD': LessonType.TD,
-                        'TP': LessonType.TP
+                        'TP': LessonType.TP,
+                        'EDT': LessonType.SPECIAL
                     }
 
                     for template, lesson_type in types.items():

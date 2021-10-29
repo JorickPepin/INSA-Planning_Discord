@@ -1,22 +1,24 @@
 from dataclasses import dataclass
-from enum import Enum, auto
+from enum import Enum
 from datetime import time
 from typing import List
 from utils import (
-    EMOJI_TEACHER, EMOJI_TITLES,
-    EMOJI_PLACE, EMOJI_LINK,
+    EMOJI_TEACHER, EMOJI_PLACE, EMOJI_LINK,
     YEAR_OF_STUDY, GROUPS_BY_YEAR
 )
 
 class LessonType(Enum):
     """Lesson types"""
-    SPECIAL = auto()
-    LANGUAGE = auto()
-    SPORT = auto()
-    PROJECT = auto()
-    CM = auto()
-    TD = auto()
-    TP = auto()
+    CM = ":orange_book:"
+    TD = ":blue_book:"
+    TP = ":closed_book:"
+    SPECIAL = ":mega:"
+    SPORT = ":person_running:"
+    LANGUAGE = ":speaking_head:"
+    PROJECT = ":technologist:"
+
+    def get_emoji(self) -> str:
+        return self.value
 
     def __repr__(self) -> str:
         return str(self.name)
@@ -61,7 +63,7 @@ class Lesson:
             f" {self.start_time.strftime('%Hh%M')} - {self.end_time.strftime('%Hh%M')}"
         )
 
-        value = EMOJI_TITLES.get(self.type) + " " if self.type in EMOJI_TITLES else ""
+        value = self.type.get_emoji() + " " if self.type else ""
 
         value += self.title
 
