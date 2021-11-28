@@ -16,6 +16,7 @@ class LessonType(Enum):
     SPORT = ":person_running:"
     LANGUAGE = ":speaking_head:"
     PROJECT = ":technologist:"
+    EV = ":smiling_face_with_tear:"
 
     def get_emoji(self) -> str:
         return self.value
@@ -67,7 +68,7 @@ class Lesson:
 
         value += self.title
 
-        if self.type in [LessonType.CM, LessonType.TD, LessonType.TP]:
+        if self.type in [LessonType.CM, LessonType.TD, LessonType.TP, LessonType.EV]:
             value += " [" + self.type.name + "]"
 
         if self.teacher:
