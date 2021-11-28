@@ -123,4 +123,3 @@ async def loop():
 
 
 client.run(DISCORD_TOKEN)
- 

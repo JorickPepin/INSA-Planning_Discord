@@ -80,6 +80,7 @@ def load_lessons(session: Session, desired_date: datetime) -> List[Lesson]:
                         'CM': LessonType.CM,
                         'TD': LessonType.TD,
                         'TP': LessonType.TP,
+                        'EV': LessonType.EV,
                         'EDT': LessonType.SPECIAL
                     }
 
@@ -166,7 +167,7 @@ def load_lessons(session: Session, desired_date: datetime) -> List[Lesson]:
             # they are in the <tr> of the group 1 (the <tr> at the index 0)
             global_lessons = lessons_to_parse[0].find_all(
                 'td',
-                {'class': ['Slot-CM', 'Slot-EDT', 'Slot-PR']}
+                {'class': ['Slot-CM', 'Slot-EDT', 'Slot-PR', 'Slot-EV']}
             )
 
             for global_lesson in global_lessons:
