@@ -8,6 +8,7 @@ the discord embed before sending it to the channel.
 
 import random
 from datetime import datetime, timedelta
+from babel.dates import format_date
 from discord import Client, Embed
 from discord.ext import tasks
 import loader
@@ -15,18 +16,19 @@ from models.timetable import Timetable
 from utils import (
     REST_IMAGES, GROUPS_BY_YEAR, YEAR_OF_STUDY,
     DISCORD_TOKEN, DISCORD_CHANNEL_ID, LAUNCH_TIME,
-    EMOJI_GROUPS, EMBED_COLOR, BLANK_LINE
+    EMOJI_GROUPS, EMBED_COLOR, BLANK_LINE,
+    TIME_ZONE, LOCALE
 )
 
 client = Client()
 
 def get_current_time() -> str:
     """Return the current time"""
-    return datetime.today().strftime('%H:%M')
+    return datetime.now(TIME_ZONE).strftime('%H:%M')
 
 def get_tomorrow_date() -> datetime:
     """Return the next day's date"""
-    return datetime.today() + timedelta(days=1)
+    return datetime.now(TIME_ZONE) + timedelta(days=1)
 
 def bold(text: str) -> str:
     """Format a text to be displayed in bold on discord"""
@@ -96,7 +98,7 @@ def generate_embed(timetable: Timetable) -> Embed:
 
         return embed
 
-    title = bold("Emploi du temps du " + timetable.date.strftime("%A %d %B") + " :") + "\n"
+    title = bold("Emploi du temps du " + format_date(timetable.date, format='full', locale=LOCALE) + " :") + "\n"
 
     if not timetable.lessons: # rest day
         return create_rest_embed()
