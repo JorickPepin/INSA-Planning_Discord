@@ -3,14 +3,14 @@ Contain environment variables and constants.
 """
 
 import os
-import locale
+import pytz
 from dotenv import load_dotenv
 
 load_dotenv()
 
 #- CONFIG
-locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
-
+TIME_ZONE = pytz.timezone('Europe/Paris')
+LOCALE = 'fr'
 LOGIN = os.getenv('LOGIN')
 PASSWORD = os.getenv('PASSWORD')
 YEAR_OF_STUDY = int(os.getenv('YEAR'))
