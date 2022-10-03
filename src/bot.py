@@ -17,7 +17,7 @@ from utils import (
     REST_IMAGES, GROUPS_BY_YEAR, YEAR_OF_STUDY,
     DISCORD_TOKEN, DISCORD_CHANNEL_ID, LAUNCH_TIME,
     EMOJI_GROUPS, EMBED_COLOR, BLANK_LINE,
-    TIME_ZONE, LOCALE
+    TIME_ZONE, LOCALE, SKIP_REST_DAYS
 )
 
 client = Client()
@@ -119,8 +119,16 @@ async def loop():
     if get_current_time() == LAUNCH_TIME:
         tomorrow_date = get_tomorrow_date()
         timetable = loader.get_timetable(tomorrow_date)
-        embed = generate_embed(timetable)
 
+        def is_weekend(date: datetime) -> bool:
+            """Check is current date is a weekend."""
+            return date.weekday() in [6,7]
+
+        # Skip rest days depends on config
+        if not timetable.lessons and SKIP_REST_DAYS and is_weekend(tomorrow_date):
+            return
+
+        embed = generate_embed(timetable)
         await client.get_channel(DISCORD_CHANNEL_ID).send(embed=embed)
 
 

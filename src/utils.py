@@ -17,6 +17,7 @@ YEAR_OF_STUDY = int(os.getenv('YEAR'))
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
 LAUNCH_TIME = os.getenv('LAUNCH_TIME')
+SKIP_REST_DAYS = bool(os.getenv('SKIP_REST_DAYS', True))
 
 #- LINKS
 TIMETABLE_URL = f"https://servif-cocktail.insa-lyon.fr/EdT/{YEAR_OF_STUDY}IF.php"
