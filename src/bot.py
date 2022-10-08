@@ -17,7 +17,7 @@ from utils import (
     REST_IMAGES, GROUPS_BY_YEAR, YEAR_OF_STUDY,
     DISCORD_TOKEN, DISCORD_CHANNEL_ID, LAUNCH_TIME,
     EMOJI_GROUPS, EMBED_COLOR, BLANK_LINE,
-    TIME_ZONE, LOCALE, SKIP_REST_DAYS
+    TIME_ZONE, LOCALE, SKIP_WEEKENDS
 )
 
 client = Client()
@@ -29,6 +29,10 @@ def get_current_time() -> str:
 def get_tomorrow_date() -> datetime:
     """Return the next day's date"""
     return datetime.now(TIME_ZONE) + timedelta(days=1)
+
+def is_weekend(date: datetime) -> bool:
+            """Check is current date is a weekend."""
+            return date.isoweekday() in [6,7]
 
 def bold(text: str) -> str:
     """Format a text to be displayed in bold on discord"""
@@ -120,16 +124,11 @@ async def loop():
         tomorrow_date = get_tomorrow_date()
         timetable = loader.get_timetable(tomorrow_date)
 
-        def is_weekend(date: datetime) -> bool:
-            """Check is current date is a weekend."""
-            return date.weekday() in [6,7]
-
         # Skip rest days depends on config
-        if not timetable.lessons and SKIP_REST_DAYS and is_weekend(tomorrow_date):
+        if not timetable.lessons and SKIP_WEEKENDS and is_weekend(tomorrow_date):
             return
 
         embed = generate_embed(timetable)
         await client.get_channel(DISCORD_CHANNEL_ID).send(embed=embed)
-
 
 client.run(DISCORD_TOKEN)

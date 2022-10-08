@@ -13,7 +13,7 @@ YEAR=3  # desired year of the schedule (3, 4 or 5)
 DISCORD_TOKEN=XXX  # the token of the bot
 DISCORD_CHANNEL_ID=XXX  # the channel id in which the bot must write
 LAUNCH_TIME=18:00  # the time at which the timetable should be imported
-SKIP_REST_DAYS=ENABLED # Add this line if you want to skip weekends
+SKIP_WEEKENDS=TRUE # Add this line if you want to skip weekends
 ```
 
 Install the dependencies:
