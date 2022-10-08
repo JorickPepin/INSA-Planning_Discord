@@ -1,3 +1,4 @@
+from operator import attrgetter
 import re
 from datetime import datetime, timedelta, time, date
 from typing import List, Optional
@@ -180,7 +181,7 @@ def load_lessons(session: Session, desired_date: datetime) -> List[Lesson]:
                 for group_lesson in group_lessons:
                     lessons.append(parse_lesson(group_lesson, [str(group)]))
 
-            return lessons
+            return sorted(lessons, key=attrgetter('start_time'))
 
 
         soup_timetable = BeautifulSoup(timetable_source_code, 'lxml')
