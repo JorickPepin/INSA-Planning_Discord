@@ -3,8 +3,7 @@ from enum import Enum
 from datetime import time
 from typing import List
 from utils import (
-    EMOJI_TEACHER, EMOJI_PLACE, EMOJI_LINK,
-    YEAR_OF_STUDY, GROUPS_BY_YEAR
+    EMOJI_TEACHER, EMOJI_PLACE, EMOJI_LINK
 )
 
 class LessonType(Enum):
@@ -36,10 +35,6 @@ class Lesson:
     type: LessonType
     groups: List[str]
     link: str
-
-    def is_a_group_lesson(self) -> bool:
-        """Indicate whether the lesson is common to all groups"""
-        return len(self.groups) == len(GROUPS_BY_YEAR[YEAR_OF_STUDY])
 
     def get_emoji_time(self) -> str:
         """Return the emoji to use for the time according to the start time of the lesson"""

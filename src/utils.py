@@ -48,11 +48,6 @@ REST_IMAGES = [
 #- UTILS
 EMBED_COLOR = 0xff0000
 BLANK_LINE = '\u200b'
-GROUPS_BY_YEAR = {
-    3: ['1', '2', '3', '4'],
-    4: ['1', '2', '3', '4'],
-    5: ['1', '2', '3']
-}
 
 # The structure of the timetable website makes it difficult to recover
 # the duration of a class slot. The following dictionnary contains the

@@ -8,8 +8,7 @@ from models.lesson import Lesson, LessonType
 from models.timetable import Timetable
 from utils import (
     INSA_URL, TIMETABLE_URL,
-    LOGIN, PASSWORD, COLSPAN_DURATION,
-    GROUPS_BY_YEAR, YEAR_OF_STUDY
+    LOGIN, PASSWORD, COLSPAN_DURATION
 )
 
 
@@ -163,23 +162,17 @@ def load_lessons(session: Session, desired_date: datetime) -> List[Lesson]:
 
             lessons = [] # will contain the Lesson objects
 
-            # - global lessons
-            # the global lessons are the lessons where all groups are concerned,
-            # they are in the <tr> of the group 1 (the <tr> at the index 0)
-            global_lessons = lessons_to_parse[0].find_all(
-                'td',
-                {'class': ['Slot-CM', 'Slot-EDT', 'Slot-PR', 'Slot-EV']}
-            )
-
-            for global_lesson in global_lessons:
-                lessons.append(parse_lesson(global_lesson, GROUPS_BY_YEAR[YEAR_OF_STUDY]))
-
-            # - specific lessons
             for group, tr_tag in enumerate(lessons_to_parse, 1):
-                group_lessons = tr_tag.find_all('td', {'class': ['Slot-TD', 'Slot-TP']})
+                for lesson in tr_tag.select('td[class*="Slot-"]'):
 
-                for group_lesson in group_lessons:
-                    lessons.append(parse_lesson(group_lesson, [str(group)]))
+                    rowspan = int(lesson.get('rowspan'))
+
+                    if rowspan > 1: # the lesson concerns several groups
+                        groups = [str(i) for i in range(group, group + rowspan)]
+                    else:
+                        groups = [str(group)]
+
+                    lessons.append(parse_lesson(lesson, groups))
 
             return sorted(lessons, key=attrgetter('start_time'))
 
@@ -227,4 +220,4 @@ def get_timetable(desired_date: datetime) -> Timetable:
     lessons = load_lessons(session, desired_date)
     session.close()
 
-    return Timetable(lessons=lessons, date=desired_date)
+    return Timetable(groups=['1', '2', '3', '4'], lessons=lessons, date=desired_date)

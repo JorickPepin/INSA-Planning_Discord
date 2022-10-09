@@ -14,8 +14,8 @@ from discord.ext import tasks
 import loader
 from models.timetable import Timetable
 from utils import (
-    REST_IMAGES, GROUPS_BY_YEAR, YEAR_OF_STUDY,
-    DISCORD_TOKEN, DISCORD_CHANNEL_ID, LAUNCH_TIME,
+    DISCORD_TOKEN, DISCORD_CHANNEL_ID,
+    REST_IMAGES, LAUNCH_TIME,
     EMOJI_GROUPS, EMBED_COLOR, BLANK_LINE,
     TIME_ZONE, LOCALE, SKIP_WEEKENDS
 )
@@ -31,8 +31,8 @@ def get_tomorrow_date() -> datetime:
     return datetime.now(TIME_ZONE) + timedelta(days=1)
 
 def is_weekend(date: datetime) -> bool:
-            """Check is current date is a weekend."""
-            return date.isoweekday() in [6,7]
+    """Check if date is a weekend day"""
+    return date.isoweekday() in [6,7]
 
 def bold(text: str) -> str:
     """Format a text to be displayed in bold on discord"""
@@ -55,7 +55,7 @@ def generate_embed(timetable: Timetable) -> Embed:
         embed = Embed(title=title, colour=EMBED_COLOR, description=BLANK_LINE)
 
         name = "Groupes"
-        for group in GROUPS_BY_YEAR[YEAR_OF_STUDY]:
+        for group in timetable.groups:
             name += " " + EMOJI_GROUPS.get(group)
 
         embed.add_field(name=name, value=BLANK_LINE, inline=False)
@@ -75,7 +75,7 @@ def generate_embed(timetable: Timetable) -> Embed:
 
         embed = Embed(title=title, colour=EMBED_COLOR, description=BLANK_LINE)
 
-        for group in GROUPS_BY_YEAR[YEAR_OF_STUDY]:
+        for group in timetable.groups:
             # we sort to recover the lessons concerning this group
             group_lessons = []
             for lesson in timetable.lessons:
@@ -95,7 +95,7 @@ def generate_embed(timetable: Timetable) -> Embed:
                 if index != len(group_lessons):
                     value += "\n" + BLANK_LINE
                 # it's the last lesson of the group but it's not the last group -> we add two lines
-                elif group != GROUPS_BY_YEAR[YEAR_OF_STUDY][-1]:
+                elif group != timetable.groups[-1]:
                     value += "\n" + BLANK_LINE + "\n" + BLANK_LINE
 
                 embed.add_field(name=name, value=value, inline=False)
@@ -124,7 +124,7 @@ async def loop():
         tomorrow_date = get_tomorrow_date()
         timetable = loader.get_timetable(tomorrow_date)
 
-        # Skip rest days depends on config
+        # Skip weekends depends on config
         if not timetable.lessons and SKIP_WEEKENDS and is_weekend(tomorrow_date):
             return
 
