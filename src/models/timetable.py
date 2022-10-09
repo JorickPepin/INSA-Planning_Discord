@@ -9,10 +9,11 @@ class Timetable:
 
     lessons: List[Lesson]
     date: datetime
+    groups: List[str]
 
     def contains_only_group_lessons(self):
         """Indicate whether all lessons in the timetable are common to all groups"""
         for lesson in self.lessons:
-            if not lesson.is_a_group_lesson():
+            if lesson.groups != self.groups:
                 return False
         return True
